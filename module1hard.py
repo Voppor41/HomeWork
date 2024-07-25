@@ -32,6 +32,7 @@ count2 /= len(grades[2])
 count3 /= len(grades[3])
 count4 /= len(grades[4])
 
+students = sorted(students)
 students_list = list(students)
 students_dict = {students_list[0]: count,
                 students_list[1]: count1,
@@ -39,4 +40,3 @@ students_dict = {students_list[0]: count,
                  students_list[3]: count3,
                  students_list[4]: count4}
 print(students_dict)
-
