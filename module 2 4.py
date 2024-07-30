@@ -13,7 +13,10 @@ for num in numbers:
     if is_prime:
         primes.append(num)
     else:
-        not_primes.append(num)
+        if num == 1:
+            continue
+        else:
+            not_primes.append(num)
 
 print("Простые числа:", primes)
 print("Составные числа:", not_primes)
