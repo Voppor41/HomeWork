@@ -1,32 +1,21 @@
-def count_result(data):
-    numbers = []
-    strings = []
-    trash = []
-
-    def help(item):
-        if isinstance(item, int) or isinstance(item, float):
-            numbers.append(item)
-        elif isinstance(item, str):
-            strings.append(item)
-        elif isinstance(item, list) or isinstance(item, tuple):
-            for sub_item in item:
-                help(sub_item)
+def calculate_structure_sum(data):
+    total_sum = 0
+    for item in data:
+        if isinstance(item, list):
+            total_sum += calculate_structure_sum(item)
         elif isinstance(item, dict):
-            for key, value in item.items():
-                help(key)
-                help(value)
-        else:
-            trash.append(item)
+            total_sum += calculate_structure_sum(item.keys())
+            total_sum += calculate_structure_sum(item.values())
+        elif isinstance(item, tuple):
+            total_sum += calculate_structure_sum(item)
+        elif isinstance(item, (int, float)):
+            total_sum += item
+        elif isinstance(item, str):
+            total_sum += len(item)
+        elif isinstance(item, set):
+            total_sum += calculate_structure_sum(item)
 
-    help(data)
-
-    count_numbers = 0
-    for i in numbers:
-        count_numbers += i
-    count_string = 0
-    for i in strings:
-        count_string += len(i)
-    return count_numbers + count_string
+    return total_sum
 
 
 data_structure = [
@@ -37,4 +26,5 @@ data_structure = [
     ((), [{(2, 'Urban', ('Urban2', 35))}])
 ]
 
-print(count_result(data_structure))
+result = calculate_structure_sum(data_structure)
+print(result)
