@@ -7,6 +7,8 @@ def read_info(name):
         line = file.readline()
         while line:
             all_data.append(line)
+            line = file.readline()
+    return all_data
 
 
 if __name__ == "__main__":
