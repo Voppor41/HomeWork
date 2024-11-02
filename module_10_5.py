@@ -1,29 +1,33 @@
-import multiprocessing
-from datetime import datetime
+import time
+from multiprocessing import Pool
 
+
+# Функция для чтения данных из файла
 def read_info(name):
     all_data = []
-    with open(name, 'r', encoding='utf-8') as file:
-        line = file.readline()
-        while line:
-            all_data.append(line)
+    with open(name, 'r') as file:
+        while True:
             line = file.readline()
+            if not line:
+                break
+            all_data.append(line.strip())
     return all_data
 
 
-if __name__ == "__main__":
-    with multiprocessing.Pool(processes=4) as pool:
-        filenames = [f'./file {number}.txt' for number in range(1, 5)]
-        start = datetime.now()
-        pool.map(read_info, filenames)
-        end = datetime.now()
-        result = end - start
-        print(result)
+# Основная часть программы
+if __name__ == '__main__':
+    # Список файлов для чтения
+    filenames = [f'file {number}.txt' for number in range(1, 5)]
 
-'''for i in range(len(filenames)):
-    start_time = datetime.now()
-    read_info(filenames[i])
-    end_time = datetime.now()
-    result = end_time - start_time
-    print(result)
-'''
+    # Линейный вызов функции read_info для каждого файла
+    start_time = time.time()
+    for filename in filenames:
+        data = read_info(filename)
+    print("Время выполнения линейного вызова:", time.time() - start_time)
+
+    # Многопроцессорный вызов функции read_info для каждого файла
+    start_time = time.time()
+    with Pool() as pool:
+        result = pool.map(read_info, filenames)
+
+    print("Время выполнения многопроцессорного вызова:", time.time() - start_time)
