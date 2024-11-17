@@ -14,6 +14,7 @@ class UserState(StatesGroup):
     growth = State()
     weight = State()
     sex = State()
+    active = State()
 
 
 @dp.message_handler(commands=['start'])
@@ -49,13 +50,55 @@ async def set_weight(message, state):
 
 
 @dp.message_handler(state=UserState.weight)
-async def send_calories(message, state):
+async def set_active(message, state):
     await state.update_data(weight=int(message.text))
+    await message.answer('Выберите вашу активность(цифру):\n'
+                         '1.Минимальная активность\n'
+                         '2.Слабая активность\n'
+                         '3.Средняя активность\n'
+                         '4.Высокая активность\n'
+                         '5.Экстра-активность(под эту категорию обычно подпадают люди,'
+                         'занимающиеся, например, тяжелой атлетикой, или другими силовыми видами спорта с ежедневными тренировками, '
+                         'а также те, кто выполняет тяжелую физическую работу).')
+    await UserState.active.set()
+
+
+@dp.message_handler(state=UserState.active)
+async def send_calories(message, state):
+    await state.update_data(active=int(message.text))
     date = await state.get_data()
     if date['sex'] == 'Мужской':
-        await message.answer(f"Ваша норма калорий: {10 * date['weight'] + 6.25 * date['growth'] + 5 * date['age'] + 5}")
+        if date['active'] == 1:
+            await message.answer(
+                f"Ваша норма калорий: {(10 * date['weight'] + 6.25 * date['growth'] + 5 * date['age'] + 5)* 1.2}")
+        elif date['active'] == 2:
+            await message.answer(
+                f"Ваша норма калорий: {(10 * date['weight'] + 6.25 * date['growth'] + 5 * date['age'] + 5) * 1.375}")
+        elif date['active'] == 3:
+            await message.answer(
+                f"Ваша норма калорий: {(10 * date['weight'] + 6.25 * date['growth'] + 5 * date['age'] + 5) * 1.55}")
+        elif date['active'] == 4:
+            await message.answer(
+                f"Ваша норма калорий: {(10 * date['weight'] + 6.25 * date['growth'] + 5 * date['age'] + 5) * 1.725}")
+        else:
+            await message.answer(
+                f"Ваша норма калорий: {(10 * date['weight'] + 6.25 * date['growth'] + 5 * date['age'] + 5) * 1.9}")
     else:
-        await message.answer(f"Ваша норма калорий: {10 * date['weight'] + 6.25 * date['growth'] + 5 * date['age'] - 161}")
+        if date['active'] == 1:
+            await message.answer(
+                f"Ваша норма калорий: {(10 * date['weight'] + 6.25 * date['growth'] + 5 * date['age'] - 161) * 1.2}")
+        elif date['active'] == 2:
+            await message.answer(
+                f"Ваша норма калорий: {(10 * date['weight'] + 6.25 * date['growth'] + 5 * date['age'] - 161) * 1.375}")
+        elif date['active'] == 3:
+            await message.answer(
+                f"Ваша норма калорий: {(10 * date['weight'] + 6.25 * date['growth'] + 5 * date['age'] - 161) * 1.55}")
+        elif date['active'] == 4:
+            await message.answer(
+                f"Ваша норма калорий: {(10 * date['weight'] + 6.25 * date['growth'] + 5 * date['age'] - 161) * 1.725}")
+        else:
+            await message.answer(
+                f"Ваша норма калорий: {(10 * date['weight'] + 6.25 * date['growth'] + 5 * date['age'] - 161) * 1.9}")
     await state.finish()
 
 
