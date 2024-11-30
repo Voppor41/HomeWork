@@ -2,7 +2,9 @@ import sqlite3
 
 def initiate_db():
     connection = sqlite3.connect("products.db")
+    connection1 = sqlite3.connect("users.db")
     cursor = connection.cursor()
+    cursor1 = connection1.cursor()
     cursor.execute('''
     CREATE TABLE IF NOT EXISTS Products(
     id INT PRIMARY KEY,
@@ -12,17 +14,19 @@ def initiate_db():
     image_url TEXT
     ) 
     ''')
+    cursor1.execute('''
+    CREATE TABLE IF NOT EXISTS Users(
+    id INT PRIMARY KEY,
+    username TEXT NOT NULL,
+    email TEXT NOT NULL,
+    age INT NOT NULL,
+    balance INT NOT NULL
+    )
+    ''')
     connection.commit()
     connection.close()
-
-def update_db_with_images():
-    conn = sqlite3.connect("products.db")
-    cursor = conn.cursor()
-    cursor.execute('''
-        ALTER TABLE Products ADD COLUMN image_url TEXT
-    ''')
-    conn.commit()
-    conn.close()
+    connection1.commit()
+    connection1.close()
 
 
 def get_all_products():
@@ -46,3 +50,17 @@ def add_test_products():
     conn.commit()
     conn.close()
 
+def add_users(username, email, age):
+    conn = sqlite3.connect("users.db")
+    cursor = conn.cursor()
+    cursor.execute("INSERT INTO Users (username, email, age, balance) VALUES(?, ?, ?, ?)", (username, email, age, 1000))
+    conn.commit()
+    conn.close()
+
+def is_included(username):
+    conn = sqlite3.connect("users.db")
+    cursor = conn.cursor()
+    cursor.execute("SELECT username FROM Users WHERE username = ?", (username,))
+    result = cursor.fetchone()
+    conn.close()
+    return result is not None
