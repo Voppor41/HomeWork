@@ -15,7 +15,3 @@ class Task(Base):
     user_id = Column(Integer, ForeignKey('users.id'), nullable= False, index=True)
     slug = Column(String, unique=True, index=True)
     user = relationship("User", back_populates='tasks')
-
-
-print(CreateTable(Task.__table__))
-print(CreateTable(User.__table__))
